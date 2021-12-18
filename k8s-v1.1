@@ -1,0 +1,101 @@
+first phase:-1
+k8s
+flavours
+deployment
+* Deployment Strategies
+1.Reduced time-to-maket
+2.customer can takeadvantage of features faster
+3.customer feedback flows back into the product team faster
+4.Higher developer morale
+
+rolling updat
+svc-----v1      svc---------v1
+        v1                      v2  
+                            v1
+
+svc---v1* v2    svc-------v2
+      v1  v2              v2  v1*
+
+Pros:
+version is slowly released across instances
+convenient for stateful applications
+
+Cons:
+rollout/rollback can take time
+supporting multiple apis is hard
+no control over traffic
+----------------------------------------------------------
+Recreate
+svc ---v1       svc---v1*
+       v2        ----v1*
+svc ---()         svc---v2
+       ()               v2
+
+pros:
+application state entirely renewed      
+
+cons:
+downtime that depands on both shutdown and bot duration of the application
+
+-----------------------------------------------------------------
+Blue-green
+
+svc----v1           svc----v1 v2+
+       v2                  v1 v2+
+
+svc----v2 v1-      svc----v2 v1%
+       v2 v1-             v2 v1%
+
+Pros:
+instant rollout/rollback
+avoid versioning issue, change the entire cluster state in one go
+
+cons:
+requires double the resources
+proper testing should be done
+handling stateful application can be hard
+------------------------------------------------------------------------
+
+canary                     v1
+svc  v1            svc---5%-->v2+
+     v2                    v1
+         v1
+svc--50%-----v2+        svc   v2  v1-
+             v2+              v2  v1-
+          v1
+Pros:
+version released for a subset of users
+convenient for error rate and performance monitoring
+fast rollback
+
+Cons:
+slow rollout
+fine tuned traffic distribution can be expensive
+---------------------------------------------------------------------------------------
+https://github.com/DeekshithSN/kubernetes/tree/master/deployment-strategies
+
+https://github.com/DeekshithSN/kubernetes/tree/master/deployment-strategies/blue-green/single-service
+
+kubectl create -f podv1.yml
+kubectl create -f podv2.yml
+
+
+kubectl rollout undo deploy deployment name
+
+-------------------------------------------------------------------------
+https://github.com/DeekshithSN/kubernetes/tree/master/deployment-strategies/recreate
+kubectl create -f app-v2.yml
+kubectl create -f app-v2.yaml
+
+
+reference video
+https://www.youtube.com/watch?v=efiMiaFjtn8
+
+
+------------------------------------------------------------------------------
+probes
+services
+ingress
+namespaces
+quotas,linits
+dashboard
